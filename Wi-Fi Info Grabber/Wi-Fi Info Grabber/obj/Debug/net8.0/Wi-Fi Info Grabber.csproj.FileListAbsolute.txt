@@ -1,0 +1,14 @@
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\bin\Debug\net8.0\Wi-Fi Info Grabber.exe
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\bin\Debug\net8.0\Wi-Fi Info Grabber.deps.json
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\bin\Debug\net8.0\Wi-Fi Info Grabber.runtimeconfig.json
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\bin\Debug\net8.0\Wi-Fi Info Grabber.dll
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\bin\Debug\net8.0\Wi-Fi Info Grabber.pdb
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\obj\Debug\net8.0\Wi-Fi Info Grabber.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\obj\Debug\net8.0\Wi-Fi Info Grabber.AssemblyInfoInputs.cache
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\obj\Debug\net8.0\Wi-Fi Info Grabber.AssemblyInfo.cs
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\obj\Debug\net8.0\Wi-Fi Info Grabber.csproj.CoreCompileInputs.cache
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\obj\Debug\net8.0\Wi-Fi Info Grabber.dll
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\obj\Debug\net8.0\refint\Wi-Fi Info Grabber.dll
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\obj\Debug\net8.0\Wi-Fi Info Grabber.pdb
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\obj\Debug\net8.0\Wi-Fi Info Grabber.genruntimeconfig.cache
+C:\Users\diona\source\repos\Wi-Fi Info Grabber\Wi-Fi Info Grabber\obj\Debug\net8.0\ref\Wi-Fi Info Grabber.dll
