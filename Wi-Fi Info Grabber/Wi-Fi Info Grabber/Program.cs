@@ -54,21 +54,24 @@ class WifiGrabber
                 foreach (Match match in ssids)
                 {
                     string ssid = match.Groups[1].Value.Trim();
+                    Console.WriteLine($"[+] Checking SSID: {ssid}");
+
                     string profileInfo = RunCmd($"netsh wlan show profile name=\"{ssid}\" key=clear");
 
                     string password = "N/A";
                     Match keyMatch = Regex.Match(profileInfo, @"Key Content\s*:\s*(.+)");
                     if (keyMatch.Success)
+                    {
                         password = keyMatch.Groups[1].Value.Trim();
+                    }
 
-                    Console.WriteLine($"[+] SSID: {ssid}");
                     if (password == "N/A")
                     {
-                        Console.WriteLine($"    Password: No password saved or unavailable\n");
+                        Console.WriteLine($"    [!] Password for SSID '{ssid}' not found or not saved.");
                     }
                     else
                     {
-                        Console.WriteLine($"    Password: {password}\n");
+                        Console.WriteLine($"    Password for SSID '{ssid}': {password}");
                     }
 
                     sw.WriteLine($"SSID: {ssid}\nPassword: {password}\n");
@@ -85,7 +88,6 @@ class WifiGrabber
                 Main(null);  // restart the program
             }
         }
-
         catch (Exception ex)
         {
             Console.WriteLine("Error: " + ex.Message);
