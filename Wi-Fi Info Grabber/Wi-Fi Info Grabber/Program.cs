@@ -20,31 +20,41 @@ class WiFiGrabber
             ShowBanner();
 
             string outputPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "wifi_passwords.txt");
-            File.WriteAllText(outputPath, string.Empty); // Clear file first
+            File.WriteAllText(outputPath, ""); // Reset file
 
             string profilesOutput = RunCmd("netsh wlan show profiles");
-
-            // Match SSIDs
             MatchCollection ssids = Regex.Matches(profilesOutput, @"All User Profile\s*:\s*(.+)", RegexOptions.IgnoreCase);
+
             if (ssids.Count == 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("[!] No Wi-Fi profiles found.");
                 Console.ResetColor();
+                Pause();
                 return;
             }
 
             foreach (Match match in ssids)
             {
-                string ssid = match.Groups[1].Value.Trim().Trim('"');
+                string ssid = match.Groups[1].Value.Trim();
                 string password = "N/A";
 
-                string profileInfo = RunCmd($"netsh wlan show profile name=\"{ssid}\" key=clear");
+                try
+                {
+                    string profileDetails = RunCmd($"netsh wlan show profile name=\"{ssid}\" key=clear");
 
-                // Multilingual regex for Key Content
-                Match keyMatch = Regex.Match(profileInfo, @"(?:Key Content|Contenido de la clave|Contenu de la clé|Schlüsselinhalt|Clef du contenu|キーの内容|Содержимое ключа)\s*:\s*(.+)", RegexOptions.IgnoreCase);
-                if (keyMatch.Success)
-                    password = keyMatch.Groups[1].Value.Trim();
+                    // Works in EN, ES, FR, DE, JP, RU, etc.
+                    Match keyMatch = Regex.Match(profileDetails,
+                        @"(?:Key Content|Contenido de la clave|Contenu de la clé|Schlüsselinhalt|Clef du contenu|キーの内容|Содержимое ключа)\s*:\s*(.+)",
+                        RegexOptions.IgnoreCase);
+
+                    if (keyMatch.Success)
+                        password = keyMatch.Groups[1].Value.Trim();
+                }
+                catch (Exception ex)
+                {
+                    password = $"[Error: {ex.Message}]";
+                }
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"[+] SSID: {ssid}");
@@ -56,10 +66,10 @@ class WiFiGrabber
             }
 
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine($"\n[!] Wi-Fi data saved to: {outputPath}");
-            Console.Write("\n[?] Run scan again? (Y/N): ");
+            Console.WriteLine($"\n[✓] Wi-Fi data saved to: {outputPath}");
             Console.ResetColor();
 
+            Console.Write("\n[?] Run scan again? (Y/N): ");
             string choice = Console.ReadLine().Trim().ToLower();
             if (choice != "y")
             {
@@ -78,27 +88,25 @@ class WiFiGrabber
             UseShellExecute = false,
             CreateNoWindow = true
         };
-        Process proc = Process.Start(psi);
-        string output = proc.StandardOutput.ReadToEnd();
-        proc.WaitForExit();
-        return output;
+
+        using (Process proc = Process.Start(psi))
+        {
+            string output = proc.StandardOutput.ReadToEnd();
+            proc.WaitForExit();
+            return output;
+        }
     }
 
     static void ShowBanner()
     {
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("+======================================================================================================+");
         Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine("|   ███████╗██╗    ██╗██╗███████╗██╗     ██╗███████╗ ██████╗ ██████╗ ██████╗ ██████╗  █████╗ ██████╗    |");
-        Console.WriteLine("|   ██╔════╝██║    ██║██║██╔════╝██║     ██║██╔════╝██╔════╝ ██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔══██╗   |");
-        Console.WriteLine("|   █████╗  ██║ █╗ ██║██║█████╗  ██║     ██║███████╗██║  ███╗██████╔╝██████╔╝██║  ██║███████║██████╔╝   |");
-        Console.WriteLine("|   ██╔══╝  ██║███╗██║██║██╔══╝  ██║     ██║╚════██║██║   ██║██╔═══╝ ██╔═══╝ ██║  ██║██╔══██║██╔═══╝    |");
-        Console.WriteLine("|   ███████╗╚███╔███╔╝██║███████╗███████╗██║███████║╚██████╔╝██║     ██║     ██████╔╝██║  ██║██║        |");
-        Console.WriteLine("|   ╚══════╝ ╚══╝╚══╝ ╚═╝╚══════╝╚══════╝╚═╝╚══════╝ ╚═════╝ ╚═╝     ╚═╝     ╚═════╝ ╚═╝  ╚═╝╚═╝        |");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("+======================================================================================================+");
+        Console.WriteLine("+==================== Wi-Fi Grabber by threadline_ ====================+");
         Console.ResetColor();
-        Console.WriteLine("🔥 Wi-Fi Profile & Password Info Grabber — by threadline_ | GitHub: https://github.com/threadline");
-        Console.WriteLine("------------------------------------------------------------------------------------------------------\n");
+    }
+
+    static void Pause()
+    {
+        Console.Write("\nPress any key to return...");
+        Console.ReadKey();
     }
 }
