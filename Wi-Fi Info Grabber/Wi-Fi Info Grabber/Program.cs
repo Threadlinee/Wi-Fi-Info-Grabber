@@ -20,12 +20,12 @@ class WiFiGrabber
             ShowBanner();
 
             string outputPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "wifi_passwords.txt");
-            File.WriteAllText(outputPath, string.Empty); // Clear file
+            File.WriteAllText(outputPath, string.Empty); // Clear file first
 
-            string profiles = RunCmd("netsh wlan show profiles");
-            Match keyMatch = Regex.Match(profileInfo, @"(?:Key Content|Contenido de la clave|Contenu de la clé|Schlüsselinhalt|キーの内容)\s*:\s*(.+)", RegexOptions.IgnoreCase);
+            string profilesOutput = RunCmd("netsh wlan show profiles");
 
-
+            // Match SSIDs
+            MatchCollection ssids = Regex.Matches(profilesOutput, @"All User Profile\s*:\s*(.+)", RegexOptions.IgnoreCase);
             if (ssids.Count == 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -41,7 +41,8 @@ class WiFiGrabber
 
                 string profileInfo = RunCmd($"netsh wlan show profile name=\"{ssid}\" key=clear");
 
-                Match keyMatch = Regex.Match(profileInfo, @"Key Content\s*:\s*(.+)");
+                // Multilingual regex for Key Content
+                Match keyMatch = Regex.Match(profileInfo, @"(?:Key Content|Contenido de la clave|Contenu de la clé|Schlüsselinhalt|Clef du contenu|キーの内容|Содержимое ключа)\s*:\s*(.+)", RegexOptions.IgnoreCase);
                 if (keyMatch.Success)
                     password = keyMatch.Groups[1].Value.Trim();
 
