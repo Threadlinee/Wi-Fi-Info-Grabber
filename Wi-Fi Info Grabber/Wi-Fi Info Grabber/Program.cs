@@ -30,6 +30,7 @@ class WifiGrabber
         try
         {
             string profiles = RunCmd("netsh wlan show profiles");
+            Console.WriteLine("[*] Profiles fetched:\n" + profiles); // Debugging output to check if profiles are fetched
 
             MatchCollection ssids = Regex.Matches(profiles, @"All User Profile\s*:\s*(.+)");
             if (ssids.Count == 0)
@@ -47,38 +48,25 @@ class WifiGrabber
                     Console.WriteLine($"[+] Checking SSID: {ssid}");
 
                     string profileInfo = RunCmd($"netsh wlan show profile name=\"{ssid}\" key=clear");
-                    Console.WriteLine("[*] Profile Info:\n" + profileInfo); // Debug output
+                    Console.WriteLine("[*] Profile Info:\n" + profileInfo); // Debugging output to check profile info
 
-                    if (profileInfo.Contains("Key Content"))
+                    string password = "N/A";
+                    Match keyMatch = Regex.Match(profileInfo, @"Key Content\s*:\s*(.+)");
+                    if (keyMatch.Success)
                     {
-                        string password = "N/A";
-                        Match keyMatch = Regex.Match(profileInfo, @"Key Content\s*:\s*(.+)");
-                        if (keyMatch.Success)
-                        {
-                            password = keyMatch.Groups[1].Value.Trim();
-                        }
-
-                        if (password == "N/A")
-                        {
-                            Console.WriteLine($"    [!] Password for SSID '{ssid}' not found or not saved.");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"    Password for SSID '{ssid}': {password}");
-                        }
-
-                        sw.WriteLine($"SSID: {ssid}\nPassword: {password}\n");
+                        password = keyMatch.Groups[1].Value.Trim();
                     }
-                    else
-                    {
-                        Console.WriteLine($"[!] No password for SSID {ssid} or profile may not have a saved password.");
-                    }
+
+                    Console.WriteLine($"[+] SSID: {ssid}");
+                    Console.WriteLine($"    Password: {password}\n");
+
+                    sw.WriteLine($"SSID: {ssid}\nPassword: {password}\n");
                 }
             }
 
             Console.WriteLine($"[!] Wi-Fi data saved to: {outputPath}");
 
-            // Loop for re-running
+            // Ask for re-run option
             Console.Write("\nWould you like to run the scan again? (Y/N): ");
             string input = Console.ReadLine();
             if (input.ToUpper() == "Y")
